@@ -12,6 +12,7 @@
 *.pif
 *.vb
 *.wsf
+*.vscode
 
 ### Objective-C ###
 # Xcode
