@@ -45,7 +45,7 @@ int main()
     else
     {   
         printf("\n---------La tarea buscada por id %d ---------\n" ,tareaBuscadaId->TareaID);
-        printf("\nID: %d", tareaBuscadaId->TareaID);
+        printf("\nID: %d",tareaBuscadaId->TareaID);
         printf("\nDescripcion: %s", tareaBuscadaId->Descripcion);
         printf("\nDuracion: %d", tareaBuscadaId->Duracion);
     }
