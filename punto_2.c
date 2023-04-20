@@ -16,21 +16,39 @@ void cargarTareas(Tarea **tareas, int cantTareas);
 int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas);
 void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas);
 void listarTareasPendientes(Tarea **tareas, int cantTareas);
+Tarea *buscarTarea(Tarea **tareas, Tarea **TRealizadas, int cantTareas, int cantTRealizadas, int id);
 int main()
 {
-    int cantTareas, opcion, cantTRealizadas;
+    int cantTareas, opcion, cantTRealizadas, idBuscado;
+    Tarea *tareaBuscadaId;
 
     printf("Ingrese la cantidad de tareas: ");
     scanf("%d", &cantTareas);
     fflush(stdin);
     Tarea **tareas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
     Tarea **tRealizadas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
-
-
+    inicializarNull(tareas, cantTareas);
+    inicializarNull(tRealizadas, cantTareas);
     cargarTareas(tareas, cantTareas);
+
     cantTRealizadas = controlTareas(tareas, cantTareas, tRealizadas);
     listarTareasRealizadas(tRealizadas, cantTRealizadas);
     listarTareasPendientes(tareas, cantTareas);
+
+    printf("\nIngrese el id de la tarea: ");
+    scanf("%d", &idBuscado);
+    tareaBuscadaId = buscarTarea(tareas, tRealizadas, cantTareas, cantTRealizadas, idBuscado);
+    if (tareaBuscadaId == NULL)
+    {
+        printf("\nNo hay elementos en tareas con el id.");
+    }
+    else
+    {   
+        printf("\n---------La tarea buscada por id %d ---------\n" ,tareaBuscadaId->TareaID);
+        printf("\nID: %d", tareaBuscadaId->TareaID);
+        printf("\nDescripcion: %s", tareaBuscadaId->Descripcion);
+        printf("\nDuracion: %d", tareaBuscadaId->Duracion);
+    }
 }
 //---------------------FUNCIONES----------------
 
@@ -93,8 +111,6 @@ int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas)
 
         if (valor == 1)
         {
-
-            // tareasRealizadas[cantTRealizada] = (Tarea *) malloc(sizeof(Tarea));
             tareasRealizadas[cantTRealizada] = tareas[i];
             cantTRealizada++;
             tareas[i] = NULL;
@@ -114,6 +130,7 @@ void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas)
 }
 
 void listarTareasPendientes(Tarea **tareas, int cantTareas)
+
 {
 
     printf("\n_____________Tareas PENDIENTES__________\n");
@@ -124,4 +141,29 @@ void listarTareasPendientes(Tarea **tareas, int cantTareas)
             mostrarUnaTarea(tareas, i);
         }
     }
+}
+
+Tarea *buscarTarea(Tarea **tareas, Tarea **TRealizadas, int cantTareas, int cantTRealizadas, int id)
+{
+
+    for (int i = 0; i < cantTareas; i++)
+    {
+        if (tareas[i] != NULL)
+        {
+            if (tareas[i]->TareaID == id)
+            {
+                return tareas[i];
+            }
+        }
+    }
+    for (int j = 0; j < cantTRealizadas; j++)
+    {
+        if (TRealizadas[j]->TareaID == id)
+        {
+
+            return TRealizadas[j];
+        }
+    }
+
+    return NULL;
 }
