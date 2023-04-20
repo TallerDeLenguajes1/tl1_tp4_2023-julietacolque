@@ -16,21 +16,39 @@ void cargarTareas(Tarea **tareas, int cantTareas);
 int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas);
 void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas);
 void listarTareasPendientes(Tarea **tareas, int cantTareas);
+Tarea *buscarTarea(Tarea **tareas, int cantTareas, Tarea **tRealizadas, int cantTRealizadas, char *palabra);
 int main()
 {
     int cantTareas, opcion, cantTRealizadas;
-
+    char *palabra = (char *)malloc(sizeof(char) * 50);
+    Tarea *tarea;
     printf("Ingrese la cantidad de tareas: ");
     scanf("%d", &cantTareas);
     fflush(stdin);
     Tarea **tareas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
     Tarea **tRealizadas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
 
-
     cargarTareas(tareas, cantTareas);
     cantTRealizadas = controlTareas(tareas, cantTareas, tRealizadas);
     listarTareasRealizadas(tRealizadas, cantTRealizadas);
     listarTareasPendientes(tareas, cantTareas);
+
+    printf("\nIngrese la palabra a buscar: ");
+    fflush(stdin);
+    gets(palabra);
+    tarea = buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, palabra);
+
+    if (tarea == NULL)
+    {
+        printf("\nNo se encontro coincidencias");
+    }
+    else
+    {
+        printf("\nTarea buscada por palabra ");
+        printf("\nID: %d", tarea->TareaID);
+        printf("\nDescripcion: %s", tarea->Descripcion);
+        printf("\nDuracion: %d", tarea->Duracion);
+    }
 }
 //---------------------FUNCIONES----------------
 
@@ -122,6 +140,36 @@ void listarTareasPendientes(Tarea **tareas, int cantTareas)
         if (tareas[i] != NULL)
         {
             mostrarUnaTarea(tareas, i);
+        }
+    }
+}
+
+Tarea *buscarTarea(Tarea **tareas, int cantTareas, Tarea **tRealizadas, int cantTRealizadas, char *palabra)
+{
+    for (int i = 0; i < cantTareas; i++)
+    {
+        if (tareas[i] != NULL)
+        {
+            if (strstr(tareas[i]->Descripcion, palabra))
+            {
+                return tareas[i];
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+    }
+
+    for (int j = 0; j < cantTareas; j++)
+    {
+        if (strstr(tRealizadas[j]->Descripcion, palabra))
+        {
+            return tRealizadas[j];
+        }
+        else
+        {
+            return NULL;
         }
     }
 }
