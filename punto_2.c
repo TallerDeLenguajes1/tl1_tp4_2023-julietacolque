@@ -10,6 +10,8 @@ struct Tarea
     int Duracion; // entre 10 – 100
 } typedef Tarea;
 
+void MostrartareaBuscada(Tarea *tarea);
+int menu();
 void inicializarNull(Tarea **tareas, int cantTareas);
 void mostrarUnaTarea(Tarea **tarea, int i);
 void cargarTareas(Tarea **tareas, int cantTareas);
@@ -21,70 +23,72 @@ Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, i
 
 int main()
 {
-    int cantTareas, opcion, cantTRealizadas, idBuscado;
-    Tarea *tareaBuscadaId;
-    int cantTareas, opcion, cantTRealizadas;
+    int cantTareas, cantTRealizadas, idBuscado, opcion;
+    Tarea *tareaBuscadaId, *tareaPalabra;
     char *palabra = (char *)malloc(sizeof(char) * 50);
-    Tarea *tarea;
 
     printf("Ingrese la cantidad de tareas: ");
     scanf("%d", &cantTareas);
     fflush(stdin);
+
     Tarea **tareas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
     Tarea **tRealizadas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
 
     inicializarNull(tareas, cantTareas);
     inicializarNull(tRealizadas, cantTareas);
+
     cargarTareas(tareas, cantTareas);
 
     cantTRealizadas = controlTareas(tareas, cantTareas, tRealizadas);
 
-    listarTareasRealizadas(tRealizadas, cantTRealizadas);
-    listarTareasPendientes(tareas, cantTareas);
+    opcion = menu();
 
-    printf("Ingrese un valor de id para buscar: ");
-    scanf("%d", &idBuscado);
-
-    buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, idBuscado);
-
-    listarTareasRealizadas(tRealizadas, cantTRealizadas);
-    listarTareasPendientes(tareas, cantTareas);
-
-    printf("\nIngrese la palabra a buscar: ");
-    fflush(stdin);
-    gets(palabra);
-    tarea = buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, palabra);
-
-    if (tarea == NULL)
+    switch (opcion)
     {
-        printf("\nNo se encontro coincidencias");
+    case 1:
+        printf("\nIngrese la palabra a buscar: ");
+        fflush(stdin);
+        gets(palabra);
+        tareaPalabra = buscarTareaPalabra(tareas, cantTareas, tRealizadas, cantTRealizadas, palabra);
+        (tareaPalabra == NULL) ? printf("\nNo se encontro coincidencias") : MostrartareaBuscada(tareaPalabra);
+        break;
+    case 2:
+        printf("\nIngrese el id de la tarea: ");
+        scanf("%d", &idBuscado);
+        tareaBuscadaId = buscarTareaID(tareas, tRealizadas, cantTareas, cantTRealizadas, idBuscado);
+        (tareaBuscadaId == NULL) ? printf("\nNo se encontro coincidencias") : MostrartareaBuscada(tareaBuscadaId);
+        break;
+    case 3:
+        listarTareasRealizadas(tRealizadas, cantTRealizadas);
+        break;
+    case 4:
+        listarTareasPendientes(tareas, cantTareas);
+        break;
     }
-    else
-    {
-        printf("\nTarea buscada por palabra ");
-        printf("\nID: %d", tarea->TareaID);
-        printf("\nDescripcion: %s", tarea->Descripcion);
-        printf("\nDuracion: %d", tarea->Duracion);
-    }
-
-    printf("\nIngrese el id de la tarea: ");
-    scanf("%d", &idBuscado);
-    tareaBuscadaId = buscarTarea(tareas, tRealizadas, cantTareas, cantTRealizadas, idBuscado);
-    if (tareaBuscadaId == NULL)
-    {
-        printf("\nNo hay elementos en tareas con el id.");
-    }
-    else
-    {
-        printf("\n---------La tarea buscada por id %d ---------\n", tareaBuscadaId->TareaID);
-        printf("\nID: %d", tareaBuscadaId->TareaID);
-        printf("\nDescripcion: %s", tareaBuscadaId->Descripcion);
-        printf("\nDuracion: %d", tareaBuscadaId->Duracion);
-    }
-
 }
 //---------------------FUNCIONES----------------
 
+void MostrartareaBuscada(Tarea *tarea)
+{
+    printf("\n---------La tarea buscada ---------\n");
+    printf("\nID: %d", tarea->TareaID);
+    printf("\nDescripcion: %s", tarea->Descripcion);
+    printf("\nDuracion: %d", tarea->Duracion);
+}
+int menu()
+{
+    int valor;
+    do
+    {
+        printf("\n1-Buscar tarea por palabra");
+        printf("\n2-Buscar tarea por ID");
+        printf("\n3-Listar tareas Realizadas");
+        printf("\n4-Listar tareas pendientes");
+        printf("\nIngrese la opcion: ");
+        scanf("%d", &valor);
+    } while (valor != 1 && valor != 2 && valor != 3 && valor != 4);
+    return valor;
+}
 void inicializarNull(Tarea **tareas, int cantTareas)
 {
     // inicializar en null
@@ -109,7 +113,7 @@ void cargarUnaTarea(Tarea **tarea, int i)
     buff = (char *)malloc(sizeof(char) * 100);
     // reservar dinamicamente memoria para cada tarea.
     tarea[i] = (Tarea *)malloc(sizeof(Tarea));
-    tarea[i]->TareaID = i;
+    tarea[i]->TareaID = i + 1;
     printf("Tarea descripcion:");
     fflush(stdin);
     gets(buff);
@@ -145,7 +149,7 @@ int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas)
         if (valor == 1)
         {
 
-            tareasRealizadas[cantTRealizada] = (Tarea *) malloc(sizeof(Tarea));
+            tareasRealizadas[cantTRealizada] = (Tarea *)malloc(sizeof(Tarea));
             tareasRealizadas[cantTRealizada] = tareas[i];
             cantTRealizada++;
             tareas[i] = NULL;
@@ -178,7 +182,6 @@ void listarTareasPendientes(Tarea **tareas, int cantTareas)
     }
 }
 
-
 Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, int cantTRealizadas, char *palabra)
 {
 
@@ -191,10 +194,6 @@ Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, i
             {
                 return tareas[i];
             }
-            else
-            {
-                return NULL;
-            }
         }
     }
 
@@ -204,11 +203,8 @@ Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, i
         {
             return tRealizadas[j];
         }
-        else
-        {
-            return NULL;
-        }
     }
+    return NULL;
 }
 
 Tarea *buscarTareaID(Tarea **tareas, Tarea **TRealizadas, int cantTareas, int cantTRealizadas, int id)
