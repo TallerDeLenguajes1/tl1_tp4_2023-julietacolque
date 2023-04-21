@@ -18,7 +18,7 @@ void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas);
 void listarTareasPendientes(Tarea **tareas, int cantTareas);
 int main()
 {
-    int cantTareas, opcion, cantTRealizadas;
+    int cantTareas, opcion, cantTRealizadas, idBuscado;
 
     printf("Ingrese la cantidad de tareas: ");
     scanf("%d", &cantTareas);
@@ -26,11 +26,18 @@ int main()
     Tarea **tareas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
     Tarea **tRealizadas = (Tarea **)malloc(sizeof(Tarea *) * cantTareas);
 
-
+    inicializarNull(tareas, cantTareas);
+    inicializarNull(tRealizadas, cantTareas);
     cargarTareas(tareas, cantTareas);
+
     cantTRealizadas = controlTareas(tareas, cantTareas, tRealizadas);
-    listarTareasRealizadas(tRealizadas, cantTRealizadas);
-    listarTareasPendientes(tareas, cantTareas);
+    // listarTareasRealizadas(tRealizadas, cantTRealizadas);
+    // listarTareasPendientes(tareas, cantTareas);
+
+    printf("Ingrese un valor de id para buscar: ");
+    scanf("%d", &idBuscado);
+
+    buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, idBuscado);
 }
 //---------------------FUNCIONES----------------
 
@@ -58,7 +65,7 @@ void cargarUnaTarea(Tarea **tarea, int i)
     buff = (char *)malloc(sizeof(char) * 100);
     // reservar dinamicamente memoria para cada tarea.
     tarea[i] = (Tarea *)malloc(sizeof(Tarea));
-    tarea[i]->TareaID = i + 1;
+    tarea[i]->TareaID = i;
     printf("Tarea descripcion:");
     fflush(stdin);
     gets(buff);
@@ -94,7 +101,7 @@ int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas)
         if (valor == 1)
         {
 
-            // tareasRealizadas[cantTRealizada] = (Tarea *) malloc(sizeof(Tarea));
+            tareasRealizadas[cantTRealizada] = (Tarea *) malloc(sizeof(Tarea));
             tareasRealizadas[cantTRealizada] = tareas[i];
             cantTRealizada++;
             tareas[i] = NULL;
@@ -114,6 +121,7 @@ void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas)
 }
 
 void listarTareasPendientes(Tarea **tareas, int cantTareas)
+
 {
 
     printf("\n_____________Tareas PENDIENTES__________\n");
@@ -125,3 +133,4 @@ void listarTareasPendientes(Tarea **tareas, int cantTareas)
         }
     }
 }
+
