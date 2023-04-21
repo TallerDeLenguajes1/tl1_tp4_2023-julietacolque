@@ -16,9 +16,16 @@ void cargarTareas(Tarea **tareas, int cantTareas);
 int controlTareas(Tarea **tareas, int cantTareas, Tarea **tareasRealizadas);
 void listarTareasRealizadas(Tarea **TRealizadas, int cantTRealizadas);
 void listarTareasPendientes(Tarea **tareas, int cantTareas);
+Tarea *buscarTareaID(Tarea **tareas, Tarea **TRealizadas, int cantTareas, int cantTRealizadas, int id);
+Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, int cantTRealizadas, char *palabra);
+
 int main()
 {
     int cantTareas, opcion, cantTRealizadas, idBuscado;
+    Tarea *tareaBuscadaId;
+    int cantTareas, opcion, cantTRealizadas;
+    char *palabra = (char *)malloc(sizeof(char) * 50);
+    Tarea *tarea;
 
     printf("Ingrese la cantidad de tareas: ");
     scanf("%d", &cantTareas);
@@ -31,13 +38,50 @@ int main()
     cargarTareas(tareas, cantTareas);
 
     cantTRealizadas = controlTareas(tareas, cantTareas, tRealizadas);
-    // listarTareasRealizadas(tRealizadas, cantTRealizadas);
-    // listarTareasPendientes(tareas, cantTareas);
+
+    listarTareasRealizadas(tRealizadas, cantTRealizadas);
+    listarTareasPendientes(tareas, cantTareas);
 
     printf("Ingrese un valor de id para buscar: ");
     scanf("%d", &idBuscado);
 
     buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, idBuscado);
+
+    listarTareasRealizadas(tRealizadas, cantTRealizadas);
+    listarTareasPendientes(tareas, cantTareas);
+
+    printf("\nIngrese la palabra a buscar: ");
+    fflush(stdin);
+    gets(palabra);
+    tarea = buscarTarea(tareas, cantTareas, tRealizadas, cantTRealizadas, palabra);
+
+    if (tarea == NULL)
+    {
+        printf("\nNo se encontro coincidencias");
+    }
+    else
+    {
+        printf("\nTarea buscada por palabra ");
+        printf("\nID: %d", tarea->TareaID);
+        printf("\nDescripcion: %s", tarea->Descripcion);
+        printf("\nDuracion: %d", tarea->Duracion);
+    }
+
+    printf("\nIngrese el id de la tarea: ");
+    scanf("%d", &idBuscado);
+    tareaBuscadaId = buscarTarea(tareas, tRealizadas, cantTareas, cantTRealizadas, idBuscado);
+    if (tareaBuscadaId == NULL)
+    {
+        printf("\nNo hay elementos en tareas con el id.");
+    }
+    else
+    {
+        printf("\n---------La tarea buscada por id %d ---------\n", tareaBuscadaId->TareaID);
+        printf("\nID: %d", tareaBuscadaId->TareaID);
+        printf("\nDescripcion: %s", tareaBuscadaId->Descripcion);
+        printf("\nDuracion: %d", tareaBuscadaId->Duracion);
+    }
+
 }
 //---------------------FUNCIONES----------------
 
@@ -134,3 +178,60 @@ void listarTareasPendientes(Tarea **tareas, int cantTareas)
     }
 }
 
+
+Tarea *buscarTareaPalabra(Tarea **tareas, int cantTareas, Tarea **tRealizadas, int cantTRealizadas, char *palabra)
+{
+
+    for (int i = 0; i < cantTareas; i++)
+    {
+        if (tareas[i] != NULL)
+        {
+
+            if (strstr(tareas[i]->Descripcion, palabra))
+            {
+                return tareas[i];
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+    }
+
+    for (int j = 0; j < cantTareas; j++)
+    {
+        if (strstr(tRealizadas[j]->Descripcion, palabra))
+        {
+            return tRealizadas[j];
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+}
+
+Tarea *buscarTareaID(Tarea **tareas, Tarea **TRealizadas, int cantTareas, int cantTRealizadas, int id)
+{
+
+    for (int i = 0; i < cantTRealizadas; i++)
+    {
+        if (tareas[i] != NULL)
+        {
+            if (tareas[i]->TareaID == id)
+            {
+                return tareas[i];
+            }
+        }
+    }
+
+    for (int j = 0; j < cantTRealizadas; j++)
+    {
+        if (TRealizadas[j]->TareaID == id)
+        {
+
+            return TRealizadas[j];
+        }
+    }
+    return NULL;
+}
