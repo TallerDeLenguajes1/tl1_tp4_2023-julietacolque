@@ -35,6 +35,7 @@ Tarea *buscarTareaPorPalabra(Lista lista, char *palabra);
 void eliminarTarea(struct Nodo *tarea);
 void mostrarDatos(Lista lista);
 void moverTareasTP5(Lista *TPendientes, Lista *TRealizadas, Lista *TProceso);
+void liberarTodo(Lista *lista);
 int main()
 {
     srand(time(NULL));
@@ -100,6 +101,10 @@ int main()
         scanf("%d", &salir);
     }
 
+    liberarTodo(&TPendientes);
+    liberarTodo(&TRealizadas);
+    liberarTodo(&TProceso);
+
     return 0;
 }
 
@@ -146,7 +151,7 @@ int longitudDListaDT(Lista L)
     return cantidad;
 }
 Tarea crearTarea(int indice)
-{   
+{
     printf("\n<<<<CREANDO TAREA>>>>\n");
     char *descripcion;
     Tarea nuevaTarea;
@@ -430,4 +435,15 @@ void moverTareasTP5(Lista *TPendientes, Lista *TRealizadas, Lista *TProceso)
     printf("\n>>>>>LISTADO TAREAS REALIZADAS>>>>>>\n");
     listarTareas(*TRealizadas);
     mostrarDatos(*TRealizadas);
+}
+
+void liberarTodo(Lista *lista)
+{
+
+    int longitud = longitudDListaDT(*lista);
+    for (int i = 0; i < longitud; i++)
+    {
+        struct Nodo *tarea = quitarNodo(lista,(*(lista))->T.TareaID);
+        eliminarTarea(tarea);
+    }
 }
